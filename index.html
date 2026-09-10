@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
 
 <div class="container">
@@ -18,7 +17,9 @@
     <h1>Ergodicity Coefficient Calculator</h1>
 
 
-   
+    <!-- ============================== -->
+    <!-- MATRIX SIZE -->
+    <!-- ============================== -->
 
     <div class="card">
 
@@ -40,7 +41,9 @@
     </div>
 
 
-   
+    <!-- ============================== -->
+    <!-- MATRIX L -->
+    <!-- ============================== -->
 
     <div
         id="matrixSection"
@@ -56,6 +59,7 @@
         <div id="matrixArea"></div>
 
 
+        <!-- STEP SIZE AFTER MATRIX L -->
 
         <label for="epsilon">
             Step Size (ε)
@@ -76,6 +80,10 @@
     </div>
 
 
+    <!-- ============================== -->
+    <!-- MATRIX W -->
+    <!-- ============================== -->
+
     <div
         id="wSection"
         class="card hidden"
@@ -87,7 +95,6 @@
 
         <div id="wMatrix"></div>
 
-
         <button onclick="calculateErgodicity()">
             Calculate Ergodicity
         </button>
@@ -95,7 +102,9 @@
     </div>
 
 
-
+    <!-- ============================== -->
+    <!-- RESULTS -->
+    <!-- ============================== -->
 
     <div
         id="resultSection"
@@ -109,7 +118,6 @@
         <p>
             Comparing every pair of rows (i, k)
         </p>
-
 
         <div id="calculations"></div>
 
@@ -133,19 +141,20 @@
 </div>
 
 
-
 <script>
 
 let W = [];
 
 
+// ======================================================
+// CREATE MATRIX L
+// ======================================================
 
 function createMatrix() {
 
     const size = parseInt(
         document.getElementById("matrixSize").value
     );
-
 
     if (!size || size < 2) {
 
@@ -154,19 +163,15 @@ function createMatrix() {
         return;
     }
 
-
     const matrixArea =
         document.getElementById("matrixArea");
 
-
     matrixArea.innerHTML = "";
-
 
     for (let i = 0; i < size; i++) {
 
         const rowDiv =
             document.createElement("div");
-
 
         rowDiv.className =
             "matrix-row";
@@ -175,14 +180,11 @@ function createMatrix() {
         const rowLabel =
             document.createElement("span");
 
-
         rowLabel.className =
             "row-label";
 
-
         rowLabel.textContent =
             `Row ${i + 1}:`;
-
 
         rowDiv.appendChild(rowLabel);
 
@@ -191,7 +193,6 @@ function createMatrix() {
 
             const input =
                 document.createElement("input");
-
 
             input.type = "number";
 
@@ -206,10 +207,8 @@ function createMatrix() {
             input.placeholder =
                 `L${i + 1}${j + 1}`;
 
-
             rowDiv.appendChild(input);
         }
-
 
         matrixArea.appendChild(rowDiv);
     }
@@ -235,7 +234,9 @@ function createMatrix() {
 
 
 
-
+// ======================================================
+// GENERATE W = I - εL
+// ======================================================
 
 function generateW() {
 
@@ -262,12 +263,11 @@ function generateW() {
     let L = [];
 
 
-
+    // Read Matrix L
 
     for (let i = 0; i < size; i++) {
 
         let row = [];
-
 
         for (let j = 0; j < size; j++) {
 
@@ -275,7 +275,6 @@ function generateW() {
                 document.getElementById(
                     `cell-${i}-${j}`
                 );
-
 
             const value =
                 parseFloat(input.value);
@@ -292,16 +291,15 @@ function generateW() {
                 return;
             }
 
-
             row.push(value);
         }
-
 
         L.push(row);
     }
 
 
 
+    // Calculate W = I - εL
 
     W = [];
 
@@ -310,22 +308,18 @@ function generateW() {
 
         let row = [];
 
-
         for (let j = 0; j < size; j++) {
 
             const identityValue =
                 (i === j) ? 1 : 0;
-
 
             const wValue =
                 identityValue
                 -
                 epsilon * L[i][j];
 
-
             row.push(wValue);
         }
-
 
         W.push(row);
     }
@@ -336,19 +330,20 @@ function generateW() {
 
 
 
+// ======================================================
+// DISPLAY MATRIX W
+// ======================================================
 
 function displayW() {
 
     const wMatrix =
         document.getElementById("wMatrix");
 
-
     wMatrix.innerHTML = "";
 
 
     const matrixWrapper =
         document.createElement("div");
-
 
     matrixWrapper.className =
         "pretty-matrix-wrapper";
@@ -357,14 +352,12 @@ function displayW() {
     const leftBracket =
         document.createElement("div");
 
-
     leftBracket.className =
         "matrix-border matrix-border-left";
 
 
     const matrixGrid =
         document.createElement("div");
-
 
     matrixGrid.className =
         "pretty-matrix-grid";
@@ -374,7 +367,6 @@ function displayW() {
         `repeat(${W.length}, minmax(65px, auto))`;
 
 
-
     for (let i = 0; i < W.length; i++) {
 
         for (let j = 0; j < W[i].length; j++) {
@@ -382,47 +374,32 @@ function displayW() {
             const cell =
                 document.createElement("div");
 
-
             cell.className =
                 "pretty-matrix-cell";
 
-
             cell.textContent =
                 formatNumber(W[i][j]);
-
 
             matrixGrid.appendChild(cell);
         }
     }
 
 
-
     const rightBracket =
         document.createElement("div");
-
 
     rightBracket.className =
         "matrix-border matrix-border-right";
 
 
-    matrixWrapper.appendChild(
-        leftBracket
-    );
+    matrixWrapper.appendChild(leftBracket);
+
+    matrixWrapper.appendChild(matrixGrid);
+
+    matrixWrapper.appendChild(rightBracket);
 
 
-    matrixWrapper.appendChild(
-        matrixGrid
-    );
-
-
-    matrixWrapper.appendChild(
-        rightBracket
-    );
-
-
-    wMatrix.appendChild(
-        matrixWrapper
-    );
+    wMatrix.appendChild(matrixWrapper);
 
 
     document
@@ -437,6 +414,9 @@ function displayW() {
 
 
 
+// ======================================================
+// CALCULATE ERGODICITY COEFFICIENT
+// ======================================================
 
 function calculateErgodicity() {
 
@@ -458,11 +438,11 @@ function calculateErgodicity() {
     const calculations =
         document.getElementById("calculations");
 
-
     calculations.innerHTML = "";
 
 
 
+    // Compare every pair of rows
 
     for (let i = 0; i < W.length; i++) {
 
@@ -479,8 +459,7 @@ function calculateErgodicity() {
             let differenceParts = [];
 
 
-
-       
+            // Compare every column j
 
             for (
                 let j = 0;
@@ -494,7 +473,6 @@ function calculateErgodicity() {
                         -
                         W[k][j]
                     );
-
 
                 currentSum += difference;
 
@@ -511,10 +489,10 @@ function calculateErgodicity() {
 
 
 
+            // Display calculation
 
             const calculationBox =
                 document.createElement("div");
-
 
             calculationBox.className =
                 "calculation-box";
@@ -562,18 +540,15 @@ function calculateErgodicity() {
             );
 
 
-
-       
+            // Find maximum
 
             if (currentSum > maxSum) {
 
                 maxSum =
                     currentSum;
 
-
                 maxI =
                     i + 1;
-
 
                 maxK =
                     k + 1;
@@ -583,6 +558,7 @@ function calculateErgodicity() {
 
 
 
+    // Final tau
 
     const tau =
         0.5 * maxSum;
@@ -639,7 +615,9 @@ function calculateErgodicity() {
 
 
 
-
+// ======================================================
+// FORMAT NUMBERS
+// ======================================================
 
 function formatNumber(number) {
 
@@ -668,7 +646,6 @@ function formatNumber(number) {
 
 
 </script>
-
 
 </body>
 
