@@ -18,9 +18,7 @@
     <h1>Ergodicity Coefficient Calculator</h1>
 
 
-    <!-- ============================== -->
-    <!-- SETTINGS -->
-    <!-- ============================== -->
+   
 
     <div class="card">
 
@@ -35,19 +33,6 @@
             placeholder="Example: 3"
         >
 
-
-        <label for="epsilon">
-            Step Size (ε)
-        </label>
-
-        <input
-            type="number"
-            id="epsilon"
-            step="any"
-            placeholder="Example: 0.5"
-        >
-
-
         <button onclick="createMatrix()">
             Create Matrix
         </button>
@@ -55,9 +40,7 @@
     </div>
 
 
-    <!-- ============================== -->
-    <!-- MATRIX L -->
-    <!-- ============================== -->
+   
 
     <div
         id="matrixSection"
@@ -73,16 +56,25 @@
         <div id="matrixArea"></div>
 
 
+
+        <label for="epsilon">
+            Step Size (ε)
+        </label>
+
+        <input
+            type="number"
+            id="epsilon"
+            step="any"
+            placeholder="Example: 0.5"
+        >
+
+
         <button onclick="generateW()">
             Generate W
         </button>
 
     </div>
 
-
-    <!-- ============================== -->
-    <!-- MATRIX W -->
-    <!-- ============================== -->
 
     <div
         id="wSection"
@@ -103,9 +95,7 @@
     </div>
 
 
-    <!-- ============================== -->
-    <!-- RESULTS -->
-    <!-- ============================== -->
+
 
     <div
         id="resultSection"
@@ -149,9 +139,6 @@
 let W = [];
 
 
-// ======================================================
-// CREATE MATRIX L
-// ======================================================
 
 function createMatrix() {
 
@@ -248,9 +235,7 @@ function createMatrix() {
 
 
 
-// ======================================================
-// GENERATE W = I - εL
-// ======================================================
+
 
 function generateW() {
 
@@ -277,7 +262,7 @@ function generateW() {
     let L = [];
 
 
-    // Read Matrix L
+
 
     for (let i = 0; i < size; i++) {
 
@@ -317,7 +302,6 @@ function generateW() {
 
 
 
-    // Calculate W
 
     W = [];
 
@@ -352,9 +336,6 @@ function generateW() {
 
 
 
-// ======================================================
-// DISPLAY MATRIX W
-// ======================================================
 
 function displayW() {
 
@@ -456,9 +437,6 @@ function displayW() {
 
 
 
-// ======================================================
-// CALCULATE ERGODICITY COEFFICIENT
-// ======================================================
 
 function calculateErgodicity() {
 
@@ -485,7 +463,6 @@ function calculateErgodicity() {
 
 
 
-    // Compare every row pair
 
     for (let i = 0; i < W.length; i++) {
 
@@ -503,6 +480,8 @@ function calculateErgodicity() {
 
 
 
+       
+
             for (
                 let j = 0;
                 j < W[i].length;
@@ -517,25 +496,19 @@ function calculateErgodicity() {
                     );
 
 
-                currentSum +=
-                    difference;
+                currentSum += difference;
 
 
                 formulaParts.push(
-
                     `|${formatNumber(W[i][j])} − ${formatNumber(W[k][j])}|`
-
                 );
 
 
                 differenceParts.push(
-
-                    formatNumber(
-                        difference
-                    )
-
+                    formatNumber(difference)
                 );
             }
+
 
 
 
@@ -590,6 +563,8 @@ function calculateErgodicity() {
 
 
 
+       
+
             if (currentSum > maxSum) {
 
                 maxSum =
@@ -608,7 +583,6 @@ function calculateErgodicity() {
 
 
 
-    // Final tau
 
     const tau =
         0.5 * maxSum;
@@ -665,9 +639,7 @@ function calculateErgodicity() {
 
 
 
-// ======================================================
-// FORMAT NUMBERS
-// ======================================================
+
 
 function formatNumber(number) {
 
