@@ -1,0 +1,245 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+
+.card {
+    background: white;
+    padding: 35px;
+    margin: 25px 0;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+}
+
+
+button {
+    display: block;
+    margin: 25px auto 0;
+    padding: 13px 28px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #1f6feb;
+    color: white;
+    cursor: pointer;
+}
+
+
+button:hover {
+    background: #1557b0;
+}
+
+
+/* ============================= */
+/* MATRIX L */
+/* ============================= */
+
+.matrix-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 10px;
+}
+
+
+.row-label {
+    width: 70px;
+    text-align: right;
+    font-weight: bold;
+}
+
+
+.matrix-input {
+    width: 65px;
+    text-align: center;
+}
+
+
+/* ============================= */
+/* MATRIX W */
+/* ============================= */
+
+.pretty-matrix-wrapper {
+    display: inline-flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px auto 30px;
+}
+
+
+.pretty-matrix-grid {
+    display: grid;
+    gap: 10px 15px;
+    padding: 8px 5px;
+}
+
+
+.pretty-matrix-cell {
+    min-width: 65px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Courier New", monospace;
+    font-size: 19px;
+    font-weight: 500;
+
+    padding: 0 8px;
+
+    box-sizing: border-box;
+}
+
+
+.matrix-border {
+    width: 10px;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+
+.matrix-border-left {
+    border-left: 3px solid #222;
+    border-top: 3px solid #222;
+    border-bottom: 3px solid #222;
+}
+
+
+.matrix-border-right {
+    border-right: 3px solid #222;
+    border-top: 3px solid #222;
+    border-bottom: 3px solid #222;
+}
+
+
+/* ============================= */
+/* CALCULATIONS */
+/* ============================= */
+
+.calculation-box {
+    text-align: left;
+
+    background: #f7f8fa;
+
+    padding: 20px;
+
+    margin: 15px 0;
+
+    border-radius: 8px;
+
+    border-left: 4px solid #1f6feb;
+}
+
+
+.calculation-box h3 {
+    margin-top: 0;
+}
+
+
+.formula {
+    font-family: "Courier New", monospace;
+    overflow-x: auto;
+}
+
+
+/* ============================= */
+/* FINAL RESULT */
+/* ============================= */
+
+.final-result {
+    margin-top: 30px;
+
+    padding: 25px;
+
+    background: #eef5ff;
+
+    border-radius: 10px;
+
+    font-size: 18px;
+}
+
+
+.final-result strong {
+    font-size: 20px;
+}
+
+
+/* ============================= */
+/* HIDDEN SECTIONS */
+/* ============================= */
+
+.hidden {
+    display: none;
+}
+
+
+/* ============================= */
+/* MOBILE */
+/* ============================= */
+
+@media (max-width: 700px) {
+
+    .container {
+        width: 95%;
+    }
+
+
+    h1 {
+        font-size: 28px;
+    }
+
+
+    .card {
+        padding: 20px;
+    }
+
+
+    .matrix-input {
+        width: 50px;
+    }
+
+
+    .pretty-matrix-cell {
+        min-width: 50px;
+        font-size: 16px;
+    }
+
+}

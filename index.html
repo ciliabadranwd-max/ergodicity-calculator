@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ergodicity Coefficient Calculator</title>
+
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>Ergodicity Coefficient Calculator</h1>
+
+
+    <!-- ============================== -->
+    <!-- SETTINGS -->
+    <!-- ============================== -->
+
+    <div class="card">
+
+        <label for="matrixSize">
+            Matrix Size
+        </label>
+
+        <input
+            type="number"
+            id="matrixSize"
+            min="2"
+            placeholder="Example: 3"
+        >
+
+
+        <label for="epsilon">
+            Step Size (ε)
+        </label>
+
+        <input
+            type="number"
+            id="epsilon"
+            step="any"
+            placeholder="Example: 0.5"
+        >
+
+
+        <button onclick="createMatrix()">
+            Create Matrix
+        </button>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- MATRIX L -->
+    <!-- ============================== -->
+
+    <div
+        id="matrixSection"
+        class="card hidden"
+    >
+
+        <h2>Matrix L</h2>
+
+        <p>
+            Enter the values of matrix L.
+        </p>
+
+        <div id="matrixArea"></div>
+
+
+        <button onclick="generateW()">
+            Generate W
+        </button>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- MATRIX W -->
+    <!-- ============================== -->
+
+    <div
+        id="wSection"
+        class="card hidden"
+    >
+
+        <h2>
+            W = I − εL
+        </h2>
+
+        <div id="wMatrix"></div>
+
+
+        <button onclick="calculateErgodicity()">
+            Calculate Ergodicity
+        </button>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- RESULTS -->
+    <!-- ============================== -->
+
+    <div
+        id="resultSection"
+        class="card hidden"
+    >
+
+        <h2>
+            Ergodicity Calculations
+        </h2>
+
+        <p>
+            Comparing every pair of rows (i, k)
+        </p>
+
+
+        <div id="calculations"></div>
+
+
+        <div class="final-result">
+
+            <h2>
+                Final Result
+            </h2>
+
+            <p id="maxPair"></p>
+
+            <p id="maxSum"></p>
+
+            <p id="tauResult"></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+let W = [];
+
+
+// ======================================================
+// CREATE MATRIX L
+// ======================================================
+
+function createMatrix() {
+
+    const size = parseInt(
+        document.getElementById("matrixSize").value
+    );
+
+
+    if (!size || size < 2) {
+
+        alert("Please enter a valid matrix size.");
+
+        return;
+    }
+
+
+    const matrixArea =
+        document.getElementById("matrixArea");
+
+
+    matrixArea.innerHTML = "";
+
+
+    for (let i = 0; i < size; i++) {
+
+        const rowDiv =
+            document.createElement("div");
+
+
+        rowDiv.className =
+            "matrix-row";
+
+
+        const rowLabel =
+            document.createElement("span");
+
+
+        rowLabel.className =
+            "row-label";
+
+
+        rowLabel.textContent =
+            `Row ${i + 1}:`;
+
+
+        rowDiv.appendChild(rowLabel);
+
+
+        for (let j = 0; j < size; j++) {
+
+            const input =
+                document.createElement("input");
+
+
+            input.type = "number";
+
+            input.step = "any";
+
+            input.id =
+                `cell-${i}-${j}`;
+
+            input.className =
+                "matrix-input";
+
+            input.placeholder =
+                `L${i + 1}${j + 1}`;
+
+
+            rowDiv.appendChild(input);
+        }
+
+
+        matrixArea.appendChild(rowDiv);
+    }
+
+
+    document
+        .getElementById("matrixSection")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("wSection")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("resultSection")
+        .classList.add("hidden");
+
+
+    W = [];
+}
+
+
+
+// ======================================================
+// GENERATE W = I - εL
+// ======================================================
+
+function generateW() {
+
+    const size =
+        parseInt(
+            document.getElementById("matrixSize").value
+        );
+
+
+    const epsilon =
+        parseFloat(
+            document.getElementById("epsilon").value
+        );
+
+
+    if (isNaN(epsilon)) {
+
+        alert("Please enter a value for epsilon.");
+
+        return;
+    }
+
+
+    let L = [];
+
+
+    // Read Matrix L
+
+    for (let i = 0; i < size; i++) {
+
+        let row = [];
+
+
+        for (let j = 0; j < size; j++) {
+
+            const input =
+                document.getElementById(
+                    `cell-${i}-${j}`
+                );
+
+
+            const value =
+                parseFloat(input.value);
+
+
+            if (isNaN(value)) {
+
+                alert(
+                    `Please enter a value for row ${i + 1}, column ${j + 1}.`
+                );
+
+                input.focus();
+
+                return;
+            }
+
+
+            row.push(value);
+        }
+
+
+        L.push(row);
+    }
+
+
+
+    // Calculate W
+
+    W = [];
+
+
+    for (let i = 0; i < size; i++) {
+
+        let row = [];
+
+
+        for (let j = 0; j < size; j++) {
+
+            const identityValue =
+                (i === j) ? 1 : 0;
+
+
+            const wValue =
+                identityValue
+                -
+                epsilon * L[i][j];
+
+
+            row.push(wValue);
+        }
+
+
+        W.push(row);
+    }
+
+
+    displayW();
+}
+
+
+
+// ======================================================
+// DISPLAY MATRIX W
+// ======================================================
+
+function displayW() {
+
+    const wMatrix =
+        document.getElementById("wMatrix");
+
+
+    wMatrix.innerHTML = "";
+
+
+    const matrixWrapper =
+        document.createElement("div");
+
+
+    matrixWrapper.className =
+        "pretty-matrix-wrapper";
+
+
+    const leftBracket =
+        document.createElement("div");
+
+
+    leftBracket.className =
+        "matrix-border matrix-border-left";
+
+
+    const matrixGrid =
+        document.createElement("div");
+
+
+    matrixGrid.className =
+        "pretty-matrix-grid";
+
+
+    matrixGrid.style.gridTemplateColumns =
+        `repeat(${W.length}, minmax(65px, auto))`;
+
+
+
+    for (let i = 0; i < W.length; i++) {
+
+        for (let j = 0; j < W[i].length; j++) {
+
+            const cell =
+                document.createElement("div");
+
+
+            cell.className =
+                "pretty-matrix-cell";
+
+
+            cell.textContent =
+                formatNumber(W[i][j]);
+
+
+            matrixGrid.appendChild(cell);
+        }
+    }
+
+
+
+    const rightBracket =
+        document.createElement("div");
+
+
+    rightBracket.className =
+        "matrix-border matrix-border-right";
+
+
+    matrixWrapper.appendChild(
+        leftBracket
+    );
+
+
+    matrixWrapper.appendChild(
+        matrixGrid
+    );
+
+
+    matrixWrapper.appendChild(
+        rightBracket
+    );
+
+
+    wMatrix.appendChild(
+        matrixWrapper
+    );
+
+
+    document
+        .getElementById("wSection")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("resultSection")
+        .classList.add("hidden");
+}
+
+
+
+// ======================================================
+// CALCULATE ERGODICITY COEFFICIENT
+// ======================================================
+
+function calculateErgodicity() {
+
+    if (W.length === 0) {
+
+        alert("Please generate matrix W first.");
+
+        return;
+    }
+
+
+    let maxSum = -1;
+
+    let maxI = null;
+
+    let maxK = null;
+
+
+    const calculations =
+        document.getElementById("calculations");
+
+
+    calculations.innerHTML = "";
+
+
+
+    // Compare every row pair
+
+    for (let i = 0; i < W.length; i++) {
+
+        for (
+            let k = i + 1;
+            k < W.length;
+            k++
+        ) {
+
+            let currentSum = 0;
+
+            let formulaParts = [];
+
+            let differenceParts = [];
+
+
+
+            for (
+                let j = 0;
+                j < W[i].length;
+                j++
+            ) {
+
+                const difference =
+                    Math.abs(
+                        W[i][j]
+                        -
+                        W[k][j]
+                    );
+
+
+                currentSum +=
+                    difference;
+
+
+                formulaParts.push(
+
+                    `|${formatNumber(W[i][j])} − ${formatNumber(W[k][j])}|`
+
+                );
+
+
+                differenceParts.push(
+
+                    formatNumber(
+                        difference
+                    )
+
+                );
+            }
+
+
+
+            const calculationBox =
+                document.createElement("div");
+
+
+            calculationBox.className =
+                "calculation-box";
+
+
+            calculationBox.innerHTML = `
+
+                <h3>
+                    i = ${i + 1}, k = ${k + 1}
+                </h3>
+
+                <p class="formula">
+
+                    Σ<sub>j</sub>
+                    |w<sub>${i + 1}j</sub>
+                    −
+                    w<sub>${k + 1}j</sub>|
+
+                    =
+
+                    ${formulaParts.join(" + ")}
+
+                </p>
+
+
+                <p class="formula">
+
+                    = ${differenceParts.join(" + ")}
+
+                </p>
+
+
+                <p class="formula">
+
+                    = <strong>
+                        ${formatNumber(currentSum)}
+                    </strong>
+
+                </p>
+            `;
+
+
+            calculations.appendChild(
+                calculationBox
+            );
+
+
+
+            if (currentSum > maxSum) {
+
+                maxSum =
+                    currentSum;
+
+
+                maxI =
+                    i + 1;
+
+
+                maxK =
+                    k + 1;
+            }
+        }
+    }
+
+
+
+    // Final tau
+
+    const tau =
+        0.5 * maxSum;
+
+
+
+    document
+        .getElementById("maxPair")
+        .innerHTML = `
+
+        Maximum pair:
+
+        <strong>
+            i = ${maxI}, k = ${maxK}
+        </strong>
+    `;
+
+
+
+    document
+        .getElementById("maxSum")
+        .innerHTML = `
+
+        Maximum sum:
+
+        <strong>
+            ${formatNumber(maxSum)}
+        </strong>
+    `;
+
+
+
+    document
+        .getElementById("tauResult")
+        .innerHTML = `
+
+        τ(W)
+
+        = ½ × ${formatNumber(maxSum)}
+
+        =
+
+        <strong>
+            ${formatNumber(tau)}
+        </strong>
+    `;
+
+
+
+    document
+        .getElementById("resultSection")
+        .classList.remove("hidden");
+}
+
+
+
+// ======================================================
+// FORMAT NUMBERS
+// ======================================================
+
+function formatNumber(number) {
+
+    const rounded =
+        Math.round(
+            (
+                number
+                +
+                Number.EPSILON
+            )
+            *
+            1000000
+        )
+        /
+        1000000;
+
+
+    if (Object.is(rounded, -0)) {
+
+        return 0;
+    }
+
+
+    return rounded;
+}
+
+
+</script>
+
+
+</body>
+
+</html>
