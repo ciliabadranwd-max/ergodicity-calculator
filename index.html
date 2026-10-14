@@ -1,211 +1,210 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Ergodicity Coefficient Calculator</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dobrushin Coefficient and Inner Product Calculator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
 
-<div class="container">
+  <main class="container">
+    <header class="page-header">
+      <div class="header-top">
+        <span class="eyebrow">✦ Matrix Analysis Studio</span>
+        <button id="themeToggle" class="theme-toggle"
+                type="button" aria-label="Switch to dark mode">
+          ☾ <span>Dark mode</span>
+        </button>
+      </div>
+      <h1>
+        Dobrushin Coefficient
+        <span class="title-accent">&amp; Inner Product</span>
+        Calculator
+      </h1>
+      <p class="subtitle">
+        A lovely little space for your matrix calculations.
+      </p>
+    </header>
 
-    <h1>Ergodicity Coefficient Calculator</h1>
-
-
-    <!-- ============================== -->
     <!-- MATRIX SIZE -->
-    <!-- ============================== -->
+    <section class="card intro-card">
+      <div class="section-kicker">01 / SETUP</div>
+      <h2>Choose your matrix size ✧</h2>
 
-    <div class="card">
+      <label for="matrixSize">Matrix Size</label>
+      <input type="number" id="matrixSize"
+             min="2" step="1" value="4">
 
-        <label for="matrixSize">
-            Matrix Size
-        </label>
+      <button class="primary-button" onclick="createMatrix()">
+        Create Matrix →
+      </button>
+    </section>
 
-        <input
-            type="number"
-            id="matrixSize"
-            min="2"
-            placeholder="Example: 3"
-        >
-
-        <button onclick="createMatrix()">
-            Create Matrix
-        </button>
-
-    </div>
-
-
-    <!-- ============================== -->
     <!-- MATRIX L -->
-    <!-- ============================== -->
+    <section id="matrixSection" class="card hidden reveal">
+      <div class="section-kicker">02 / INPUT</div>
+      <h2>Matrix L ♡</h2>
+      <p class="section-description">
+        Enter the values of matrix L.
+      </p>
 
-    <div
-        id="matrixSection"
-        class="card hidden"
-    >
-
-        <h2>Matrix L</h2>
-
-        <p>
-            Enter the values of matrix L.
-        </p>
-
+      <div class="matrix-scroll">
         <div id="matrixArea"></div>
+      </div>
 
+      <label for="epsilon">Step Size (ε)</label>
+      <input type="number" id="epsilon"
+             step="any" placeholder="Example: 0.5">
 
-        <!-- STEP SIZE AFTER MATRIX L -->
+      <button class="primary-button" onclick="generateW()">
+        Generate W →
+      </button>
+    </section>
 
-        <label for="epsilon">
-            Step Size (ε)
-        </label>
-
-        <input
-            type="number"
-            id="epsilon"
-            step="any"
-            placeholder="Example: 0.5"
-        >
-
-
-        <button onclick="generateW()">
-            Generate W
-        </button>
-
-    </div>
-
-
-    <!-- ============================== -->
     <!-- MATRIX W -->
-    <!-- ============================== -->
+    <section id="wSection" class="card hidden reveal">
+      <div class="section-kicker">03 / MATRIX</div>
+      <h2>W = I − εL</h2>
+      <div id="wMatrix" class="matrix-scroll"></div>
 
-    <div
-        id="wSection"
-        class="card hidden"
-    >
+      <button class="primary-button"
+              onclick="calculateErgodicity()">
+        Calculate ✦
+      </button>
+    </section>
 
-        <h2>
-            W = I − εL
-        </h2>
+    <!-- CALCULATIONS -->
+    <section id="resultSection"
+             class="card results-card hidden reveal">
 
-        <div id="wMatrix"></div>
+      <div class="section-kicker">04 / ANALYSIS</div>
 
-        <button onclick="calculateErgodicity()">
-            Calculate Ergodicity
-        </button>
+      <div class="calculation-headings">
+        <h3>
+          <span class="heading-dot pink-dot"></span>
+          Dobrushin Coefficient Calculation
+        </h3>
+        <h3>
+          <span class="heading-dot purple-dot"></span>
+          Inner Product Calculation
+        </h3>
+      </div>
 
-    </div>
+      <div id="calculations"></div>
 
+      <!-- FINAL RESULT -->
+      <h2 class="final-title">✦ Final Result ✦</h2>
 
-    <!-- ============================== -->
-    <!-- RESULTS -->
-    <!-- ============================== -->
-
-    <div
-        id="resultSection"
-        class="card hidden"
-    >
-
-        <h2>
-            Ergodicity Calculations
-        </h2>
-
-        <p>
-            Comparing every pair of rows (i, k)
-        </p>
-
-        <div id="calculations"></div>
-
-
-        <div class="final-result">
-
-            <h2>
-                Final Result
-            </h2>
-
-            <p id="maxPair"></p>
-
-            <p id="maxSum"></p>
-
-            <p id="tauResult"></p>
-
+      <div class="final-results-grid">
+        <div class="final-result dobrushin-result">
+          <span class="result-icon">♡</span>
+          <h3>Dobrushin Coefficient</h3>
+          <p id="maxPair"></p>
+          <p id="maxSum"></p>
+          <p id="tauResult"></p>
         </div>
 
-    </div>
+        <div class="final-result inner-result">
+          <span class="result-icon">✧</span>
+          <h3>Inner Product</h3>
+          <p id="minPair"></p>
+          <p id="minProduct"></p>
+        </div>
+      </div>
+    </section>
 
-</div>
-
+    <footer>Made for curious minds ♡</footer>
+  </main>
 
 <script>
 
 let W = [];
 
+// =====================================
+// LIGHT / DARK MODE
+// =====================================
 
-// ======================================================
+const themeToggle = document.getElementById("themeToggle");
+
+let savedTheme = null;
+
+try {
+    savedTheme = localStorage.getItem("calculator-theme");
+} catch (error) {}
+
+function setTheme(theme) {
+    const dark = theme === "dark";
+
+    document.documentElement.dataset.theme =
+        dark ? "dark" : "light";
+
+    themeToggle.setAttribute(
+        "aria-pressed", String(dark)
+    );
+
+    themeToggle.setAttribute(
+        "aria-label",
+        dark ? "Switch to light mode" : "Switch to dark mode"
+    );
+
+    themeToggle.innerHTML = dark
+        ? '☀ <span>Light mode</span>'
+        : '☾ <span>Dark mode</span>';
+
+    try {
+        localStorage.setItem("calculator-theme", theme);
+    } catch (error) {}
+}
+
+setTheme(savedTheme === "dark" ? "dark" : "light");
+
+themeToggle.addEventListener("click", () => {
+    const current = document.documentElement.dataset.theme;
+    setTheme(current === "dark" ? "light" : "dark");
+});
+
+// =====================================
 // CREATE MATRIX L
-// ======================================================
+// =====================================
 
 function createMatrix() {
 
-    const size = parseInt(
+    const size = Number(
         document.getElementById("matrixSize").value
     );
 
-    if (!size || size < 2) {
-
+    if (!Number.isInteger(size) || size < 2) {
         alert("Please enter a valid matrix size.");
-
         return;
     }
 
-    const matrixArea =
-        document.getElementById("matrixArea");
-
+    const matrixArea = document.getElementById("matrixArea");
     matrixArea.innerHTML = "";
 
     for (let i = 0; i < size; i++) {
 
-        const rowDiv =
-            document.createElement("div");
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "matrix-row";
 
-        rowDiv.className =
-            "matrix-row";
-
-
-        const rowLabel =
-            document.createElement("span");
-
-        rowLabel.className =
-            "row-label";
-
-        rowLabel.textContent =
-            `Row ${i + 1}:`;
+        const rowLabel = document.createElement("span");
+        rowLabel.className = "row-label";
+        rowLabel.textContent = `Row ${i + 1}:`;
 
         rowDiv.appendChild(rowLabel);
 
-
         for (let j = 0; j < size; j++) {
 
-            const input =
-                document.createElement("input");
+            const input = document.createElement("input");
 
             input.type = "number";
-
             input.step = "any";
-
-            input.id =
-                `cell-${i}-${j}`;
-
-            input.className =
-                "matrix-input";
-
-            input.placeholder =
-                `L${i + 1}${j + 1}`;
+            input.id = `cell-${i}-${j}`;
+            input.className = "matrix-input";
+            input.placeholder = `L${i + 1}${j + 1}`;
 
             rowDiv.appendChild(input);
         }
@@ -213,81 +212,62 @@ function createMatrix() {
         matrixArea.appendChild(rowDiv);
     }
 
-
-    document
-        .getElementById("matrixSection")
+    document.getElementById("matrixSection")
         .classList.remove("hidden");
 
-
-    document
-        .getElementById("wSection")
+    document.getElementById("wSection")
         .classList.add("hidden");
 
-
-    document
-        .getElementById("resultSection")
+    document.getElementById("resultSection")
         .classList.add("hidden");
-
 
     W = [];
 }
 
-
-
-// ======================================================
+// =====================================
 // GENERATE W = I - εL
-// ======================================================
+// =====================================
 
 function generateW() {
 
-    const size =
-        parseInt(
-            document.getElementById("matrixSize").value
-        );
+    const size = Number(
+        document.getElementById("matrixSize").value
+    );
 
+    const epsilonInput = document.getElementById("epsilon");
+    const epsilon = Number(epsilonInput.value);
 
-    const epsilon =
-        parseFloat(
-            document.getElementById("epsilon").value
-        );
-
-
-    if (isNaN(epsilon)) {
-
-        alert("Please enter a value for epsilon.");
-
+    if (
+        epsilonInput.value.trim() === "" ||
+        !Number.isFinite(epsilon)
+    ) {
+        alert("Please enter a valid epsilon.");
         return;
     }
 
-
-    let L = [];
-
-
-    // Read Matrix L
+    const L = [];
 
     for (let i = 0; i < size; i++) {
 
-        let row = [];
+        const row = [];
 
         for (let j = 0; j < size; j++) {
 
-            const input =
-                document.getElementById(
-                    `cell-${i}-${j}`
-                );
+            const input = document.getElementById(
+                `cell-${i}-${j}`
+            );
 
-            const value =
-                parseFloat(input.value);
+            if (!input || input.value.trim() === "") {
+                alert(`Enter row ${i + 1}, column ${j + 1}.`);
+                if (input) input.focus();
+                return;
+            }
 
+            const value = Number(input.value);
 
-            if (isNaN(value)) {
-
-                alert(
-                    `Please enter a value for row ${i + 1}, column ${j + 1}.`
-                );
-
+            if (!Number.isFinite(value)) {
+                alert("Please enter valid matrix values.");
                 input.focus();
-
                 return;
             }
 
@@ -297,356 +277,282 @@ function generateW() {
         L.push(row);
     }
 
-
-
-    // Calculate W = I - εL
-
     W = [];
-
 
     for (let i = 0; i < size; i++) {
 
-        let row = [];
+        const row = [];
 
         for (let j = 0; j < size; j++) {
 
-            const identityValue =
-                (i === j) ? 1 : 0;
+            const identityValue = i === j ? 1 : 0;
 
-            const wValue =
-                identityValue
-                -
-                epsilon * L[i][j];
-
-            row.push(wValue);
+            row.push(
+                identityValue - epsilon * L[i][j]
+            );
         }
 
         W.push(row);
     }
 
-
     displayW();
 }
 
-
-
-// ======================================================
+// =====================================
 // DISPLAY MATRIX W
-// ======================================================
+// =====================================
 
 function displayW() {
 
-    const wMatrix =
-        document.getElementById("wMatrix");
-
+    const wMatrix = document.getElementById("wMatrix");
     wMatrix.innerHTML = "";
 
+    const matrixWrapper = document.createElement("div");
+    matrixWrapper.className = "pretty-matrix-wrapper";
 
-    const matrixWrapper =
-        document.createElement("div");
-
-    matrixWrapper.className =
-        "pretty-matrix-wrapper";
-
-
-    const leftBracket =
-        document.createElement("div");
-
+    const leftBracket = document.createElement("div");
     leftBracket.className =
         "matrix-border matrix-border-left";
 
-
-    const matrixGrid =
-        document.createElement("div");
-
-    matrixGrid.className =
-        "pretty-matrix-grid";
-
+    const matrixGrid = document.createElement("div");
+    matrixGrid.className = "pretty-matrix-grid";
 
     matrixGrid.style.gridTemplateColumns =
         `repeat(${W.length}, minmax(65px, auto))`;
-
 
     for (let i = 0; i < W.length; i++) {
 
         for (let j = 0; j < W[i].length; j++) {
 
-            const cell =
-                document.createElement("div");
+            const cell = document.createElement("div");
+            cell.className = "pretty-matrix-cell";
 
-            cell.className =
-                "pretty-matrix-cell";
-
-            cell.textContent =
-                formatNumber(W[i][j]);
+            cell.textContent = formatNumber(W[i][j]);
 
             matrixGrid.appendChild(cell);
         }
     }
 
-
-    const rightBracket =
-        document.createElement("div");
-
+    const rightBracket = document.createElement("div");
     rightBracket.className =
         "matrix-border matrix-border-right";
 
-
     matrixWrapper.appendChild(leftBracket);
-
     matrixWrapper.appendChild(matrixGrid);
-
     matrixWrapper.appendChild(rightBracket);
-
 
     wMatrix.appendChild(matrixWrapper);
 
-
-    document
-        .getElementById("wSection")
+    document.getElementById("wSection")
         .classList.remove("hidden");
 
-
-    document
-        .getElementById("resultSection")
+    document.getElementById("resultSection")
         .classList.add("hidden");
 }
 
-
-
-// ======================================================
-// CALCULATE ERGODICITY COEFFICIENT
-// ======================================================
+// =====================================
+// DOBRUSHIN AND INNER PRODUCT
+// =====================================
 
 function calculateErgodicity() {
 
     if (W.length === 0) {
-
         alert("Please generate matrix W first.");
-
         return;
     }
 
-
-    let maxSum = -1;
-
+    let maxSum = -Infinity;
     let maxI = null;
-
     let maxK = null;
 
+    let minInnerProduct = Infinity;
+    let minI = null;
+    let minK = null;
 
     const calculations =
         document.getElementById("calculations");
 
     calculations.innerHTML = "";
 
-
-
-    // Compare every pair of rows
-
     for (let i = 0; i < W.length; i++) {
 
-        for (
-            let k = i + 1;
-            k < W.length;
-            k++
-        ) {
+        for (let k = i + 1; k < W.length; k++) {
 
             let currentSum = 0;
+            let currentInnerProduct = 0;
 
-            let formulaParts = [];
+            const formulaParts = [];
+            const differenceParts = [];
+            const productFormulaParts = [];
+            const productValueParts = [];
 
-            let differenceParts = [];
+            for (let j = 0; j < W[i].length; j++) {
 
-
-            // Compare every column j
-
-            for (
-                let j = 0;
-                j < W[i].length;
-                j++
-            ) {
-
-                const difference =
-                    Math.abs(
-                        W[i][j]
-                        -
-                        W[k][j]
-                    );
+                // DOBRUSHIN
+                const difference = Math.abs(
+                    W[i][j] - W[k][j]
+                );
 
                 currentSum += difference;
-
 
                 formulaParts.push(
                     `|${formatNumber(W[i][j])} − ${formatNumber(W[k][j])}|`
                 );
 
-
                 differenceParts.push(
                     formatNumber(difference)
                 );
+
+                // INNER PRODUCT
+                const product = W[i][j] * W[k][j];
+
+                currentInnerProduct += product;
+
+                productFormulaParts.push(
+                    `(${formatNumber(W[i][j])} × ${formatNumber(W[k][j])})`
+                );
+
+                productValueParts.push(
+                    formatNumber(product)
+                );
             }
 
-
-
-            // Display calculation
-
-            const calculationBox =
+            const pairContainer =
                 document.createElement("div");
 
-            calculationBox.className =
-                "calculation-box";
+            pairContainer.className = "pair-container";
 
+            // LEFT: DOBRUSHIN
+            const dobrushinBox =
+                document.createElement("div");
 
-            calculationBox.innerHTML = `
+            dobrushinBox.className =
+                "calculation-box dobrushin-box";
 
-                <h3>
-                    i = ${i + 1}, k = ${k + 1}
-                </h3>
+            dobrushinBox.innerHTML = `
+                <h3>i = ${i + 1}, k = ${k + 1}</h3>
 
                 <p class="formula">
-
                     Σ<sub>j</sub>
-                    |w<sub>${i + 1}j</sub>
-                    −
+                    |w<sub>${i + 1}j</sub> −
                     w<sub>${k + 1}j</sub>|
-
-                    =
-
-                    ${formulaParts.join(" + ")}
-
+                    = ${formulaParts.join(" + ")}
                 </p>
 
-
                 <p class="formula">
-
                     = ${differenceParts.join(" + ")}
-
                 </p>
 
+                <p class="formula">
+                    = <strong>${formatNumber(currentSum)}</strong>
+                </p>
 
                 <p class="formula">
-
+                    ½ × ${formatNumber(currentSum)}
                     = <strong>
-                        ${formatNumber(currentSum)}
-                    </strong>
-
+                        ${formatNumber(0.5 * currentSum)}
+                      </strong>
                 </p>
             `;
 
+            // RIGHT: INNER PRODUCT
+            const innerProductBox =
+                document.createElement("div");
 
-            calculations.appendChild(
-                calculationBox
-            );
+            innerProductBox.className =
+                "calculation-box inner-product-box";
 
+            innerProductBox.innerHTML = `
+                <h3>i = ${i + 1}, k = ${k + 1}</h3>
 
-            // Find maximum
+                <p class="formula">
+                    ⟨w<sub>${i + 1}</sub>,
+                    w<sub>${k + 1}</sub>⟩
+                    = Σ<sub>j</sub>
+                    w<sub>${i + 1}j</sub>
+                    w<sub>${k + 1}j</sub>
+                </p>
 
+                <p class="formula">
+                    = ${productFormulaParts.join(" + ")}
+                </p>
+
+                <p class="formula">
+                    = ${productValueParts.join(" + ")}
+                </p>
+
+                <p class="formula">
+                    = <strong>
+                        ${formatNumber(currentInnerProduct)}
+                      </strong>
+                </p>
+            `;
+
+            pairContainer.appendChild(dobrushinBox);
+            pairContainer.appendChild(innerProductBox);
+
+            calculations.appendChild(pairContainer);
+
+            // MAXIMUM DOBRUSHIN SUM
             if (currentSum > maxSum) {
+                maxSum = currentSum;
+                maxI = i + 1;
+                maxK = k + 1;
+            }
 
-                maxSum =
-                    currentSum;
-
-                maxI =
-                    i + 1;
-
-                maxK =
-                    k + 1;
+            // MINIMUM INNER PRODUCT
+            if (currentInnerProduct < minInnerProduct) {
+                minInnerProduct = currentInnerProduct;
+                minI = i + 1;
+                minK = k + 1;
             }
         }
     }
 
+    // FINAL RESULTS
+    const tau = 0.5 * maxSum;
 
+    document.getElementById("maxPair").innerHTML =
+        `Maximum pair:
+         <strong>i = ${maxI}, k = ${maxK}</strong>`;
 
-    // Final tau
+    document.getElementById("maxSum").innerHTML =
+        `Maximum sum:
+         <strong>${formatNumber(maxSum)}</strong>`;
 
-    const tau =
-        0.5 * maxSum;
+    document.getElementById("tauResult").innerHTML =
+        `τ(W) = ½ × ${formatNumber(maxSum)}
+         = <strong>${formatNumber(tau)}</strong>`;
 
+    document.getElementById("minPair").innerHTML =
+        `Minimum inner product pair:
+         <strong>i = ${minI}, k = ${minK}</strong>`;
 
+    document.getElementById("minProduct").innerHTML =
+        `Minimum inner product:
+         <strong>${formatNumber(minInnerProduct)}</strong>`;
 
-    document
-        .getElementById("maxPair")
-        .innerHTML = `
-
-        Maximum pair:
-
-        <strong>
-            i = ${maxI}, k = ${maxK}
-        </strong>
-    `;
-
-
-
-    document
-        .getElementById("maxSum")
-        .innerHTML = `
-
-        Maximum sum:
-
-        <strong>
-            ${formatNumber(maxSum)}
-        </strong>
-    `;
-
-
-
-    document
-        .getElementById("tauResult")
-        .innerHTML = `
-
-        τ(W)
-
-        = ½ × ${formatNumber(maxSum)}
-
-        =
-
-        <strong>
-            ${formatNumber(tau)}
-        </strong>
-    `;
-
-
-
-    document
-        .getElementById("resultSection")
+    document.getElementById("resultSection")
         .classList.remove("hidden");
 }
 
-
-
-// ======================================================
+// =====================================
 // FORMAT NUMBERS
-// ======================================================
+// =====================================
 
 function formatNumber(number) {
 
-    const rounded =
-        Math.round(
-            (
-                number
-                +
-                Number.EPSILON
-            )
-            *
-            1000000
-        )
-        /
-        1000000;
-
+    const rounded = Math.round(
+        (number + Number.EPSILON) * 1000000
+    ) / 1000000;
 
     if (Object.is(rounded, -0)) {
-
         return 0;
     }
-
 
     return rounded;
 }
 
-
 </script>
-
 </body>
-
 </html>
